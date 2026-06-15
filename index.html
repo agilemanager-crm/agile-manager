@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-version="4.0">
+<html lang="pt-BR" data-version="4.5">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2A2520">
-<meta name="description" content="Dall — Plataforma Comercial v4.0 · Gestão de propostas, CRM e relacionamento com incorporadoras">
+<meta name="theme-color" content="#1B2A4A">
+<meta name="description" content="Agile Manager · Plataforma Comercial · Gestão de CRM, Propostas e Estoque — Mercado de Luxo">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>AGILE MANAGER · Plataforma Comercial</title>
@@ -919,31 +919,170 @@ Qualquer dúvida, estou à disposição! 💼</div>
 <!-- ═══ EMPREENDIMENTOS ═══ -->
 <div class="page" id="pg-empreendimentos">
 <div class="wrap">
-  <div style="margin-bottom:1.75rem"><h1 class="sec-title">Empreendimentos</h1><p style="font-size:12px;color:var(--ink3)">Fichas rápidas · Atmosphere + 16 Terceiros Exclusivos Dall</p></div>
-  <div style="font-size:10px;font-weight:600;color:var(--ok);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.9rem">Atmosphere Home SPA</div>
-  <div style="background:var(--surf);border:1px solid var(--bd);border-radius:var(--r-lg);padding:1.25rem;margin-bottom:1.75rem">
-    <div style="display:grid;grid-template-columns:3fr 2fr;gap:1.5rem">
-      <div>
-        <div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:4px">Atmosphere Home SPA</div>
-        <div style="font-size:11px;color:var(--ink3);margin-bottom:10px">Praia Brava, Itajaí — SC · 8 Torres · Em obras</div>
-        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
-          <span class="pill p-ok">8 Torres</span><span class="pill p-bronze">Home SPA</span><span class="pill p-gold">Alto padrão</span><span class="pill p-warn">Em obra</span>
+
+  <!-- Header -->
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:10px">
+    <div>
+      <div class="sec-title serif">Carteira de Imóveis</div>
+      <div class="sec-sub">Atmosphere Home SPA · Terceiros Exclusivos · Gestão de Estoque</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="setEmpTab('importar')">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="margin-right:4px;vertical-align:-1px"><path d="M8 2v8M5 7l3 3 3-3M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Import / Export
+      </button>
+      <button class="btn btn-sm" onclick="abrirModalEstoque(null,'terc')">+ Terceiro</button>
+      <button class="btn btn-f btn-sm" onclick="abrirModalEstoque(null,'atm')">+ Atmosphere</button>
+    </div>
+  </div>
+
+  <!-- KPIs estoque -->
+  <div id="emp-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:1.5rem"></div>
+
+  <!-- Tabs -->
+  <div class="tabs" style="margin-bottom:1.1rem">
+    <button class="tab active" onclick="setEmpTab('atm')">Atmosphere Home SPA</button>
+    <button class="tab" onclick="setEmpTab('terc')">Terceiros Exclusivos</button>
+    <button class="tab" onclick="setEmpTab('historico')">Evolução de Valores</button>
+    <button class="tab" onclick="setEmpTab('importar')">Import / Export</button>
+  </div>
+
+  <!-- Filtro rápido — só visível nas abas de lista -->
+  <div class="fbar" id="emp-fbar" style="margin-bottom:1rem">
+    <input id="emp-search" placeholder="Buscar por nome, empreendimento, cidade..." oninput="renderCarteira()" style="flex:1;min-width:200px">
+    <select id="emp-status-f" onchange="renderCarteira()">
+      <option value="">Todos os status</option>
+      <option value="disponivel">Disponível</option>
+      <option value="reservado">Reservado</option>
+      <option value="vendido">Vendido</option>
+      <option value="em_obra">Em Obra</option>
+      <option value="pronto">Pronto</option>
+    </select>
+    <select id="emp-cidade-f" onchange="renderCarteira()">
+      <option value="">Todas as cidades</option>
+    </select>
+  </div>
+
+  <!-- Lista dinâmica / painel dinâmico -->
+  <div id="emp-lista"></div>
+
+</div>
+</div>
+<!-- ═══ MODAL ESTOQUE ═══ -->
+<div class="ov" id="ov-estoque">
+<div class="modal modal-lg">
+  <div class="mhdr">
+    <div><div class="mhdr-t" id="me-titulo">Nova Unidade</div><div class="mhdr-s" id="me-sub">Preencha os dados do imóvel</div></div>
+    <button class="mcls" onclick="closeOv('ov-estoque')">✕</button>
+  </div>
+  <div class="mbody">
+
+    <!-- Tipo -->
+    <div class="fsec">
+      <div class="fsec-t">Classificação</div>
+      <div class="fg fg2">
+        <div class="fi">
+          <label>Tipo</label>
+          <select id="me-tipo" onchange="toggleAtmFields()">
+            <option value="terc">Terceiro Exclusivo</option>
+            <option value="atm">Atmosphere Home SPA</option>
+          </select>
         </div>
-        <div style="font-size:12px;color:var(--ink2);line-height:1.7">
-          <strong>Tabela:</strong> 18/04/2026 · <strong>Faixa:</strong> R$ 8,7mi a R$ 39,7mi<br>
-          <strong>Entrada:</strong> 15% · <strong>Parcelas:</strong> 84x · <strong>Reforço:</strong> 14x semestral
-        </div>
-        <div style="margin-top:10px"><a href="https://atmospherehomespa.com.br" target="_blank" class="btn btn-f btn-sm" style="text-decoration:none">🌐 Site oficial</a></div>
-      </div>
-      <div><div style="font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Torres disponíveis</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
-          <div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">A</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">B</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">C</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">D</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">E</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">F</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">G</div></div><div style="background:var(--forest-lt);border-radius:7px;padding:8px;text-align:center"><div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:16px;color:var(--brand-bronze)">H</div></div>
+        <div class="fi">
+          <label>Status</label>
+          <select id="me-status">
+            <option value="disponivel">Disponível</option>
+            <option value="reservado">Reservado</option>
+            <option value="em_obra">Em Obra</option>
+            <option value="pronto">Pronto</option>
+            <option value="vendido">Vendido</option>
+          </select>
         </div>
       </div>
     </div>
+
+    <!-- Identificação -->
+    <div class="fsec">
+      <div class="fsec-t">Identificação</div>
+      <div class="fg fg2">
+        <div class="fi"><label>Nome / Título</label><input id="me-nome" placeholder="Ex: Cobertura Illuminati — Duplex"></div>
+        <div class="fi"><label>Empreendimento</label><input id="me-empr" placeholder="Ex: Illuminati"></div>
+      </div>
+      <div class="fg fg3" style="margin-top:8px">
+        <div class="fi"><label>Unidade</label><input id="me-unidade" placeholder="Ex: Duplex / 1501"></div>
+        <div class="fi"><label>Torre (Atmosphere)</label><input id="me-torre" placeholder="A / B / C..."></div>
+        <div class="fi"><label>Cidade</label><input id="me-cidade" placeholder="Balneário Camboriú"></div>
+      </div>
+    </div>
+
+    <!-- Características -->
+    <div class="fsec">
+      <div class="fsec-t">Características</div>
+      <div class="fg fg4">
+        <div class="fi"><label>Área (m²)</label><input id="me-area" type="number" step="0.01" placeholder="0.00"></div>
+        <div class="fi"><label>Dormitórios</label><input id="me-dorm" type="number" min="0" max="10" placeholder="0"></div>
+        <div class="fi"><label>Suítes</label><input id="me-suit" type="number" min="0" max="10" placeholder="0"></div>
+        <div class="fi"><label>Vagas</label><input id="me-vagas" type="number" min="0" max="10" placeholder="0"></div>
+      </div>
+    </div>
+
+    <!-- Valores -->
+    <div class="fsec">
+      <div class="fsec-t">Tabela de Preços</div>
+      <div class="fg fg3">
+        <div class="fi"><label>Valor total (R$)</label><input id="me-valor" type="number" step="1000" placeholder="0" oninput="calcMeEntrada()"></div>
+        <div class="fi"><label>% Entrada</label><input id="me-pct-entrada" type="number" step="1" min="0" max="100" value="15" oninput="calcMeEntrada()"></div>
+        <div class="fi"><label>Entrada (R$)</label><input id="me-entrada" type="number" step="1000" placeholder="0" class="ro" readonly></div>
+      </div>
+      <div class="fg fg2" style="margin-top:8px">
+        <div class="fi"><label>Tabela DIRETO — construtora (R$)</label><input id="me-tabela-direto" type="number" step="1000" placeholder="Fluxo direto com construtora"></div>
+        <div class="fi"><label>Tabela CHAVES — bancário (R$)</label><input id="me-tabela-chaves" type="number" step="1000" placeholder="Fluxo com parcela de chaves" oninput="calcMeChavesPct()"></div>
+      </div>
+      <div class="fg fg2" style="margin-top:8px" id="me-chaves-row">
+        <div class="fi"><label>Valor parcela chaves (R$)</label><input id="me-chaves" type="number" step="1000" placeholder="~30% do valor tabela chaves" oninput="calcMeChavesPct()"></div>
+        <div class="fi"><label>% chaves / tabela</label><input id="me-chaves-pct" type="number" step="0.1" placeholder="30%" class="ro" readonly></div>
+      </div>
+      <div class="fg fg4" style="margin-top:8px">
+        <div class="fi"><label>Qtd parcelas</label><input id="me-pqtd" type="number" min="0" placeholder="0"></div>
+        <div class="fi"><label>Vlr parcela (R$)</label><input id="me-pval" type="number" step="100" placeholder="0"></div>
+        <div class="fi"><label>Qtd reforços</label><input id="me-rqtd" type="number" min="0" placeholder="0"></div>
+        <div class="fi"><label>Vlr reforço (R$)</label><input id="me-rval" type="number" step="1000" placeholder="0"></div>
+      </div>
+      <div class="fg fg2" style="margin-top:8px">
+        <div class="fi">
+          <label>Tipo de financiamento</label>
+          <select id="me-fin">
+            <option value="bancario">Financiamento bancário</option>
+            <option value="direto">Direto com construtora</option>
+            <option value="avista">À vista</option>
+            <option value="permuta">Permuta</option>
+          </select>
+        </div>
+        <div class="fi"><label>Previsão de entrega</label><input id="me-entrega" placeholder="Ex: Dez/2028"></div>
+      </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="fsec">
+      <div class="fsec-t">Observações</div>
+      <div class="fi"><label>Obs / Diferenciais</label><textarea id="me-obs" placeholder="Diferenciais, vista, andar, condições especiais..."></textarea></div>
+    </div>
+
+    <!-- Link -->
+    <div class="fsec">
+      <div class="fsec-t">Links</div>
+      <div class="fg fg2">
+        <div class="fi"><label>Site / Tour virtual</label><input id="me-site" placeholder="https://..."></div>
+        <div class="fi"><label>PDF / Material</label><input id="me-pdf" placeholder="https://..."></div>
+      </div>
+    </div>
+
   </div>
-  <div style="font-size:10px;font-weight:600;color:var(--brand-bronze);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.9rem">16 Terceiros Exclusivos — Dall</div>
-  <div id="emp-terc"></div>
+  <div class="modal-actions">
+    <button class="btn btn-f" onclick="salvarEstoque()">Salvar imóvel</button>
+    <button class="btn" onclick="closeOv('ov-estoque')">Cancelar</button>
+    <button class="btn btn-danger btn-sm" id="me-del-btn" onclick="deletarEstoque()" style="margin-left:auto;display:none">Excluir</button>
+  </div>
 </div>
 </div>
 
@@ -3110,28 +3249,284 @@ function renderEmpreendimentos() {
 }
 
 // ══ RELATÓRIOS ══
+// ── Captura canvas como dataURL para uso no PDF ──
+function canvasToImg(id, w, h) {
+  // Recria o canvas com dimensões maiores para melhor resolução no PDF
+  const orig = document.getElementById(id);
+  if (!orig) return null;
+  const c = document.createElement('canvas');
+  c.width = w || orig.width * 2;
+  c.height = h || orig.height * 2;
+  const ctx = c.getContext('2d');
+  ctx.scale(2, 2);
+  ctx.drawImage(orig, 0, 0, orig.width, orig.height);
+  return c.toDataURL('image/png');
+}
+
+// ── Gera SVG de barra horizontal para PDF (substitui canvas) ──
+function barSVG(layers, W, H) {
+  const rows = layers.map((row, i) => {
+    const y = i * 28;
+    const w = Math.max(row.pct / 100 * (W - 80), 4);
+    return `
+      <text x="0" y="${y + 10}" font-size="8" fill="#8A96A8" font-family="Montserrat,sans-serif">${row.l}</text>
+      <rect x="0" y="${y + 14}" width="${W - 80}" height="10" rx="2" fill="#EEF0F4"/>
+      <rect x="0" y="${y + 14}" width="${w}" height="10" rx="2" fill="${row.c}"/>
+      <text x="${W - 75}" y="${y + 23}" font-size="9" fill="#1B2A4A" font-weight="600" font-family="Montserrat,sans-serif">${row.v}</text>
+      <text x="${W - 45}" y="${y + 23}" font-size="8" fill="#8A96A8" font-family="Montserrat,sans-serif">${row.pct.toFixed(0)}%</text>`;
+  }).join('');
+  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${layers.length * 28}">${rows}</svg>`
+  )))}`;
+}
+
+// ── Gera donut SVG para PDF ──
+function donutSVG(segments, size) {
+  const cx = size / 2, cy = size / 2, r = size / 2 - 6, inner = r * 0.56;
+  let start = -Math.PI / 2;
+  const total = segments.reduce((s, x) => s + x.v, 0) || 1;
+  let paths = '';
+  segments.forEach(sg => {
+    const sweep = (sg.v / total) * Math.PI * 2;
+    const x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
+    const x2 = cx + r * Math.cos(start + sweep), y2 = cy + r * Math.sin(start + sweep);
+    const lg = sweep > Math.PI ? 1 : 0;
+    paths += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${lg},1 ${x2},${y2} Z" fill="${sg.c}"/>`;
+    start += sweep;
+  });
+  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+      ${paths}
+      <circle cx="${cx}" cy="${cy}" r="${inner}" fill="white"/>
+      <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="14" font-weight="700" fill="#1B2A4A" font-family="Montserrat,sans-serif">${total}</text>
+    </svg>`
+  )))}`;
+}
+
+// ── Gera barras verticais SVG para PDF ──
+function barVertSVG(bars, W, H) {
+  const maxV = Math.max(...bars.map(b => b.v), 1);
+  const bw = Math.floor((W - bars.length * 4) / bars.length);
+  const statusColor = { aprovada: '#2E7D52', analise: '#C9A84C', recebida: '#A85820', rascunho: '#8A96A8', perdida: '#9B2C1C' };
+  const rects = bars.map((b, i) => {
+    const bh = Math.max((b.v / maxV) * (H - 30), 4);
+    const x = i * (bw + 4);
+    const c = statusColor[b.s] || '#C9A84C';
+    return `
+      <rect x="${x}" y="${H - 20 - bh}" width="${bw}" height="${bh}" rx="3" fill="${c}"/>
+      <text x="${x + bw / 2}" y="${H - 22 - bh}" text-anchor="middle" font-size="7" fill="#8A96A8" font-family="Montserrat,sans-serif">${(b.v / 1e6).toFixed(1)}M</text>
+      <text x="${x + bw / 2}" y="${H - 4}" text-anchor="middle" font-size="7" fill="#8A96A8" font-family="Montserrat,sans-serif">${b.l.substring(0, 7)}</text>`;
+  }).join('');
+  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+      <line x1="0" y1="${H - 20}" x2="${W}" y2="${H - 20}" stroke="#E2E5EC" stroke-width="1"/>
+      ${rects}
+    </svg>`
+  )))}`;
+}
+
 function imprimirConsolidado() {
-  const tot = propostas ? propostas.length : 0;
-  const vol = propostas ? propostas.reduce((s,p)=>s+p.ato+p.pqtd*p.pval+p.rqtd*p.rval+p.chaves+p.dval,0) : 0;
-  const hot = dados ? dados.filter(d=>d.pot==='hot').length : 0;
-  const ace = dados ? dados.filter(d=>d.ace==='Sim').length : 0;
-  const rpa = document.getElementById('rpa'); if(!rpa) return;
-  rpa.innerHTML = `<div style="font-family:var(--font-body),'Montserrat',sans-serif,'DM Sans',sans-serif;font-size:11px">
-    <div style="background:var(--forest);padding:14px 20px;display:flex;justify-content:space-between;align-items:center">
-      <div style="font-family:var(--font-title),'Montserrat',sans-serif,'Cormorant Garamond',serif;font-size:22px;color:#fff;letter-spacing:2px">Agile Manager</div>
-      <div style="text-align:right;font-size:9px;color:rgba(255,255,255,.5)">Relatório Consolidado · ${new Date().toLocaleDateString('pt-BR')}</div>
-    </div>
-    <div style="padding:14px 20px">
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:14px">
-        <div style="background:var(--surf2);border-radius:5px;padding:7px 9px;text-align:center"><div style="font-size:18px">${dados?dados.length:0}</div><div style="font-size:8px;color:#9A918A">Contatos</div></div>
-        <div style="background:var(--surf2);border-radius:5px;padding:7px 9px;text-align:center"><div style="font-size:18px">${hot}</div><div style="font-size:8px;color:#9A918A">Quentes</div></div>
-        <div style="background:var(--surf2);border-radius:5px;padding:7px 9px;text-align:center"><div style="font-size:18px">${ace}</div><div style="font-size:8px;color:#9A918A">ACE</div></div>
-        <div style="background:var(--surf2);border-radius:5px;padding:7px 9px;text-align:center"><div style="font-size:18px">${tot}</div><div style="font-size:8px;color:#9A918A">Propostas</div></div>
-        <div style="background:var(--surf2);border-radius:5px;padding:7px 9px;text-align:center"><div style="font-size:14px">R$ ${(vol/1e6).toFixed(1)}M</div><div style="font-size:8px;color:#9A918A">Volume</div></div>
+  const rpa = document.getElementById('rpa'); if (!rpa) return;
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  // ── Dados ──
+  const tot   = propostas ? propostas.length : 0;
+  const vol   = propostas ? propostas.reduce((s,p)=>s+p.ato+p.pqtd*p.pval+p.rqtd*p.rval+p.chaves+p.dval, 0) : 0;
+  const hot   = dados ? dados.filter(d=>d.pot==='hot').length : 0;
+  const warm  = dados ? dados.filter(d=>d.pot==='warm').length : 0;
+  const cold  = dados ? dados.filter(d=>d.pot==='cold').length : 0;
+  const ace   = dados ? dados.filter(d=>d.ace==='Sim').length : 0;
+  const onb   = dados ? dados.filter(d=>d.onb).length : 0;
+  const aprov = propostas ? propostas.filter(p=>p.status==='aprovada').length : 0;
+  const txConv = tot > 0 ? (aprov / tot * 100).toFixed(1) : '0.0';
+
+  // ── Funil SVG ──
+  const funilLayers = [
+    {l:'Contatos totais', v:dados?dados.length:0, pct:100,                                    c:'#1B2A4A'},
+    {l:'Quentes',         v:hot,  pct:(dados&&dados.length)?hot/dados.length*100:0,            c:'#9B2C1C'},
+    {l:'Mornos',          v:warm, pct:(dados&&dados.length)?warm/dados.length*100:0,           c:'#A85820'},
+    {l:'Frios',           v:cold, pct:(dados&&dados.length)?cold/dados.length*100:0,           c:'#8A96A8'},
+    {l:'Parceiros ACE',   v:ace,  pct:(dados&&dados.length)?ace/dados.length*100:0,            c:'#C9A84C'},
+    {l:'Propostas',       v:tot,  pct:(dados&&dados.length)?tot/dados.length*100:0,            c:'#2E7D52'},
+  ];
+  const funilImg = barSVG(funilLayers, 340, 200);
+
+  // ── Canais donut ──
+  const canalMap = {};
+  (dados||[]).forEach(d=>{ const c=d.canal||'Outro'; canalMap[c]=(canalMap[c]||0)+1; });
+  const canalSeg = Object.entries(canalMap).sort((a,b)=>b[1]-a[1]).slice(0,5)
+    .map((x,i)=>({l:x[0],v:x[1],c:['#C9A84C','#1B2A4A','#2E7D52','#A85820','#9B2C1C'][i]}));
+  const canalImg = donutSVG(canalSeg, 120);
+
+  // ── Status donut ──
+  const stMap={aprovada:0,analise:0,recebida:0,rascunho:0,perdida:0};
+  (propostas||[]).forEach(p=>{ if(stMap[p.status]!==undefined) stMap[p.status]++; });
+  const stSeg = Object.entries(stMap).filter(x=>x[1]>0)
+    .map(([k,v])=>({l:k,v,c:{aprovada:'#2E7D52',analise:'#C9A84C',recebida:'#A85820',rascunho:'#8A96A8',perdida:'#9B2C1C'}[k]}));
+  const statusImg = stSeg.length ? donutSVG(stSeg, 120) : null;
+
+  // ── Volume barras ──
+  const volBars = (propostas||[]).map(p=>({
+    l: p.comprador&&p.comprador!=='–' ? p.comprador.split(' ')[0] : p.imob.split(' ')[0],
+    v: p.ato+p.pqtd*p.pval+p.rqtd*p.rval+p.chaves+p.dval,
+    s: p.status
+  }));
+  const volImg = volBars.length ? barVertSVG(volBars, 340, 130) : null;
+
+  // ── Cidades ranking ──
+  const cidMap={};
+  (dados||[]).forEach(d=>{ const c=d.cidade||'Outro'; cidMap[c]=(cidMap[c]||0)+1; });
+  const cidTop = Object.entries(cidMap).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const cidMax = cidTop[0]?cidTop[0][1]:1;
+  const cidHTML = cidTop.map(([c,n])=>{
+    const pct = n/cidMax*100;
+    return `<div style="margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px">
+        <span style="color:#1B2A4A">${c}</span><span style="color:#8A96A8">${n}</span>
       </div>
-      <p style="color:#9A918A;font-size:9px">Dall Empreendimentos · ${new Date().toLocaleDateString('pt-BR')}</p>
-    </div></div>`;
-  setTimeout(() => window.print(), 200);
+      <div style="height:6px;background:#EEF0F4;border-radius:3px">
+        <div style="height:100%;width:${pct}%;background:#C9A84C;border-radius:3px"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── HTML do relatório ──
+  rpa.innerHTML = `
+  <div style="font-family:'Montserrat','DM Sans',sans-serif;font-size:11px;color:#1B2A4A;background:#F5F4F0;min-height:100vh">
+
+    <!-- CABEÇALHO -->
+    <div style="background:#1B2A4A;padding:18px 24px;display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:14px">
+        <svg width="28" height="32" viewBox="0 0 36 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 13L13 7L18 11L23 7L26 13H10Z" stroke="#C9A84C" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+          <circle cx="13" cy="7" r="1.2" fill="#C9A84C"/><circle cx="18" cy="11" r="1.2" fill="#C9A84C"/><circle cx="23" cy="7" r="1.2" fill="#C9A84C"/>
+          <path d="M11 14C10 16 9.5 18 10 20C10.5 22 12 23 14 24L18 25L22 24C24 23 25.5 22 26 20C26.5 18 26 16 25 14H11Z" stroke="#C9A84C" stroke-width="1.3" fill="none"/>
+          <path d="M9 18C7 19 6 21 7 24C8 27 10 28 12 29L18 32L24 29C26 28 28 27 29 24C30 21 29 19 27 18" stroke="#C9A84C" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+          <circle cx="15" cy="18" r="1" fill="#C9A84C"/><circle cx="21" cy="18" r="1" fill="#C9A84C"/>
+        </svg>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#fff;letter-spacing:.15em">AGILE</div>
+          <div style="font-size:16px;font-weight:300;color:#C9A84C;letter-spacing:.2em;margin-top:-2px">MANAGER</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.08em">Relatório Consolidado BI</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:3px">${hoje} · ${hora}</div>
+      </div>
+    </div>
+
+    <!-- KPIs TOPO -->
+    <div style="background:#243660;padding:12px 24px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px">
+      ${[
+        {v:dados?dados.length:0, l:'Contatos'},
+        {v:hot,                  l:'Quentes'},
+        {v:warm,                 l:'Mornos'},
+        {v:ace,                  l:'Parceiros ACE'},
+        {v:onb,                  l:'Onboarding OK'},
+        {v:tot,                  l:'Propostas'},
+        {v:'R$'+(vol/1e6).toFixed(1)+'M', l:'Volume Total'},
+      ].map(k=>`
+        <div style="text-align:center">
+          <div style="font-size:18px;font-weight:300;color:#fff">${k.v}</div>
+          <div style="font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-top:2px">${k.l}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- CORPO -->
+    <div style="padding:20px 24px">
+
+      <!-- LINHA 1: Funil + Canais -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+
+        <div style="background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E5EC">
+          <div style="font-size:9px;font-weight:700;color:#8A96A8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #EEF0F4">Funil de Potencial</div>
+          <img src="${funilImg}" style="width:100%;height:auto"/>
+        </div>
+
+        <div style="background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E5EC">
+          <div style="font-size:9px;font-weight:700;color:#8A96A8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #EEF0F4">Canais de Contato</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <img src="${canalImg}" style="width:90px;height:90px;flex-shrink:0"/>
+            <div style="font-size:9px;line-height:2">
+              ${canalSeg.map(s=>`<div style="display:flex;align-items:center;gap:5px">
+                <span style="width:8px;height:8px;border-radius:2px;background:${s.c};display:inline-block"></span>
+                <span style="color:#1B2A4A">${s.l}</span>
+                <span style="color:#8A96A8;margin-left:auto;padding-left:8px">${s.v}</span>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINHA 2: Volume + Cidades -->
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:14px">
+
+        <div style="background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E5EC">
+          <div style="font-size:9px;font-weight:700;color:#8A96A8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #EEF0F4">Volume por Proposta</div>
+          ${volImg ? `<img src="${volImg}" style="width:100%;height:auto"/>` : '<div style="color:#8A96A8;font-size:10px">Sem propostas cadastradas</div>'}
+        </div>
+
+        <div style="background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E5EC">
+          <div style="font-size:9px;font-weight:700;color:#8A96A8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #EEF0F4">Contatos por Cidade</div>
+          ${cidHTML}
+        </div>
+      </div>
+
+      <!-- LINHA 3: Status + Tabela propostas -->
+      <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:14px;margin-bottom:14px">
+
+        <div style="background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E5EC">
+          <div style="font-size:9px;font-weight:700;color:#8A96A8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #EEF0F4">Status das Propostas</div>
+          ${statusImg ? `
+          <div style="display:flex;align-items:center;gap:12px">
+            <img src="${statusImg}" style="width:90px;height:90px;flex-shrink:0"/>
+            <div style="font-size:9px;line-height:2">
+              ${stSeg.map(s=>`<div style="display:flex;align-items:center;gap:5px">
+                <span style="width:8px;height:8px;border-radius:2px;background:${s.c};display:inline-block"></span>
+                <span style="color:#1B2A4A">${s.l}</span>
+                <span style="color:#8A96A8;margin-left:6px">${s.v}</span>
+              </div>`).join('')}
+            </div>
+          </div>` : '<div style="color:#8A96A8;font-size:10px">Sem propostas</div>'}
+        </div>
+
+        <div style="background:#fff;border-radius:10px;padding:14px;border:1px solid #E2E5EC">
+          <div style="font-size:9px;font-weight:700;color:#8A96A8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #EEF0F4">Detalhamento de Propostas</div>
+          <table style="width:100%;border-collapse:collapse;font-size:9px">
+            <thead><tr style="background:#EEF0F4">
+              <th style="padding:5px 7px;text-align:left;color:#8A96A8;font-weight:600;text-transform:uppercase;font-size:8px">Proposta</th>
+              <th style="padding:5px 7px;text-align:left;color:#8A96A8;font-weight:600;text-transform:uppercase;font-size:8px">Imobiliária</th>
+              <th style="padding:5px 7px;text-align:right;color:#8A96A8;font-weight:600;text-transform:uppercase;font-size:8px">Volume</th>
+              <th style="padding:5px 7px;text-align:center;color:#8A96A8;font-weight:600;text-transform:uppercase;font-size:8px">Status</th>
+            </tr></thead>
+            <tbody>
+              ${(propostas||[]).map(p=>{
+                const v = p.ato+p.pqtd*p.pval+p.rqtd*p.rval+p.chaves+p.dval;
+                const sc = {aprovada:'#2E7D52',analise:'#C9A84C',recebida:'#A85820',rascunho:'#8A96A8',perdida:'#9B2C1C'}[p.status]||'#8A96A8';
+                const sl = {aprovada:'Aprovada',analise:'Em análise',recebida:'Recebida',rascunho:'Rascunho',perdida:'Perdida'}[p.status]||p.status;
+                return `<tr style="border-bottom:1px solid #EEF0F4">
+                  <td style="padding:5px 7px;color:#1B2A4A;font-weight:500">${p.comprador&&p.comprador!=='–'?p.comprador:p.imob}</td>
+                  <td style="padding:5px 7px;color:#8A96A8">${p.imob}</td>
+                  <td style="padding:5px 7px;text-align:right;font-weight:600;color:#1B2A4A">R$ ${(v/1e6).toFixed(2)}M</td>
+                  <td style="padding:5px 7px;text-align:center"><span style="background:${sc}20;color:${sc};font-size:8px;padding:2px 7px;border-radius:3px;font-weight:600">${sl}</span></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RODAPÉ -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #E2E5EC;margin-top:4px">
+        <div style="font-size:8px;color:#8A96A8">Agile Manager · Plataforma Comercial · ${hoje}</div>
+        <div style="font-size:8px;color:#8A96A8">Taxa de conversão: <strong style="color:#1B2A4A">${txConv}%</strong> · Volume total: <strong style="color:#C9A84C">R$ ${(vol/1e6).toFixed(2)}M</strong></div>
+      </div>
+
+    </div>
+  </div>`;
+
+  setTimeout(() => window.print(), 350);
 }
 
 // ══ CALCULADORA COMISSÃO ══
@@ -3502,6 +3897,929 @@ function renderAce() {
         </tbody>
       </table>
     </div>`;
+}
+
+// ══ CARTEIRA DE IMÓVEIS ══
+
+let estoque = [];
+let empTabAtual = 'atm';
+let empEditId = null;
+
+function loadEstoque() {
+  try {
+    const ver = localStorage.getItem('agile_estoque_ver');
+    const raw = localStorage.getItem('agile_estoque');
+    if (raw && ver === '20260608') { estoque = JSON.parse(raw); return; }
+  } catch(e) {}
+  // Seed com dados reais — Tabela Integ 08/06/2026
+  // ── TERCEIROS EXCLUSIVOS ──
+  const tercSeed = [
+    {nome:'Contorno Sul — Apartamento 1202',unidade:'Apto 1202',empr:'Contorno Sul',cidade:'Itajaí',area:79.78,dorm:3,suit:1,vagas:2,valor:900000,entrada:270000,pctEntrada:30,pqtd:48,pval:13125,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Casa Jequiti Resort — Jacarandá 101',unidade:'Jacarandá 101',empr:'Jequiti Resort',cidade:'Guarujá',area:306.3,dorm:4,suit:4,vagas:4,valor:6500000,entrada:1950000,pctEntrada:30,pqtd:48,pval:47395,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Cobertura Sunny Beach — Apto 303',unidade:'Apto 303',empr:'Sunny Beach',cidade:'Bombinhas',area:173.28,dorm:3,suit:3,vagas:2,valor:2500000,entrada:750000,pctEntrada:30,pqtd:48,pval:20833,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Edifício Volo Zenith — Apto 1601',unidade:'Apto 1601',empr:'Volo Zenith',cidade:'Joaçaba',area:205.46,dorm:4,suit:4,vagas:4,valor:2600000,entrada:780000,pctEntrada:30,pqtd:48,pval:21667,rqtd:0,rval:0,fin:'bancario',entrega:'OBRA',status:'em_obra'},
+    {nome:'Ed. Di Cavalcanti — Apto 101',unidade:'Apto 101',empr:'Di Cavalcanti',cidade:'Cuiabá',area:263,dorm:3,suit:3,vagas:3,valor:1900000,entrada:570000,pctEntrada:30,pqtd:48,pval:13854,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Brava Park — Apto 1502',unidade:'Apto 1502',empr:'Brava Park',cidade:'Itajaí',area:82,dorm:2,suit:2,vagas:2,valor:1550000,entrada:465000,pctEntrada:30,pqtd:48,pval:11302,rqtd:0,rval:0,fin:'bancario',entrega:'OBRA DEZ/28',status:'em_obra'},
+    {nome:'Edifício Olympo Tower — Ap 3600',unidade:'Ap 3600',empr:'Olympo Tower',cidade:'Balneário Camboriú',area:131.77,dorm:4,suit:2,vagas:3,valor:6700000,entrada:2010000,pctEntrada:30,pqtd:48,pval:50208,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Casa Condomínio Jardim Acapulco',unidade:'Casa',empr:'Jardim Acapulco',cidade:'Guarujá',area:961.6,dorm:6,suit:6,vagas:6,valor:5000000,entrada:1500000,pctEntrada:30,pqtd:48,pval:37500,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Cobertura Saint Paul — Duplex Apto 71',unidade:'Apto 71',empr:'Saint Paul',cidade:'Caxias do Sul',area:295.29,dorm:3,suit:3,vagas:2,valor:1900000,entrada:570000,pctEntrada:30,pqtd:48,pval:13854,rqtd:0,rval:0,fin:'bancario',entrega:'PRONTO',status:'pronto'},
+    {nome:'Brava Park — Apto 1501',unidade:'Apto 1501',empr:'Brava Park',cidade:'Itajaí',area:82,dorm:2,suit:2,vagas:2,valor:1585000,entrada:475500,pctEntrada:30,pqtd:48,pval:11563,rqtd:0,rval:0,fin:'bancario',entrega:'OBRA DEZ/28',status:'em_obra'},
+  ];
+
+  // ── ATMOSPHERE — dados reais Integ 08/06/2026 ──
+  // Fluxo CHAVES: 15% entrada + 84x parcelas + 14x reforço semestral + parcela chaves
+  // Fluxo DIRETO: 15% entrada + 84x parcelas + 14x reforço semestral (sem chaves)
+  const atmSeed = [
+    // TORRE A
+    {u:'101 A',t:'A',tipo:'Garden Final 01',area:436.4,dorm:4,suit:4,vagas:3,valor:16462890,entrada:2469434,pqtd:84,pval:53896,rqtd:14,rval:323378,chaves:4938867,entrega:'Dez/2028'},
+    {u:'102 A',t:'A',tipo:'Garden Final 02',area:485.42,dorm:4,suit:4,vagas:3,valor:20792911,entrada:3118937,pqtd:84,pval:68072,rqtd:14,rval:408432,chaves:6237873,entrega:'Dez/2028'},
+    {u:'201 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:12606945,entrada:1891042,pqtd:84,pval:41273,rqtd:14,rval:247636,chaves:3782083,entrega:'Dez/2028'},
+    {u:'202 A',t:'A',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15247376,entrada:2287106,pqtd:84,pval:49917,rqtd:14,rval:299502,chaves:4574213,entrega:'Dez/2028'},
+    {u:'301 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:12733584,entrada:1910038,pqtd:84,pval:41687,rqtd:14,rval:250124,chaves:3820075,entrega:'Dez/2028'},
+    {u:'302 A',t:'A',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15374015,entrada:2306102,pqtd:84,pval:50332,rqtd:14,rval:301990,chaves:4612205,entrega:'Dez/2028'},
+    {u:'401 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13860223,entrada:2079034,pqtd:84,pval:45376,rqtd:14,rval:272254,chaves:4158067,entrega:'Dez/2028'},
+    {u:'402 A',t:'A',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:16500653,entrada:2475098,pqtd:84,pval:54020,rqtd:14,rval:324120,chaves:4950196,entrega:'Dez/2028'},
+    {u:'601 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13113502,entrada:1967025,pqtd:84,pval:42931,rqtd:14,rval:257587,chaves:3934051,entrega:'Dez/2028'},
+    {u:'602 A',t:'A',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15878086,entrada:2381713,pqtd:84,pval:51982,rqtd:14,rval:311891,chaves:4763426,entrega:'Dez/2028'},
+    {u:'801 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13490937,entrada:2023641,pqtd:84,pval:44167,rqtd:14,rval:265001,chaves:4047281,entrega:'Dez/2028'},
+    {u:'802 A',t:'A',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:16131368,entrada:2419705,pqtd:84,pval:52811,rqtd:14,rval:316866,chaves:4839410,entrega:'Dez/2028'},
+    {u:'1101 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:16515496,entrada:2477324,pqtd:84,pval:54069,rqtd:14,rval:324412,chaves:4954649,entrega:'Dez/2028'},
+    {u:'1201 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:16854428,entrada:2528164,pqtd:84,pval:55178,rqtd:14,rval:331060,chaves:5056328,entrega:'Dez/2028'},
+    {u:'1301 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:16986907,entrada:2548036,pqtd:84,pval:55612,rqtd:14,rval:336126,chaves:5096072,entrega:'Dez/2028'},
+    {u:'1401 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:17380463,entrada:2607069,pqtd:84,pval:56900,rqtd:14,rval:344160,chaves:5214139,entrega:'Dez/2028'},
+    {u:'1501 A',t:'A',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:17560817,entrada:2634123,pqtd:84,pval:57491,rqtd:14,rval:350000,chaves:5268245,entrega:'Dez/2028'},
+    {u:'Cob 01 A',t:'A',tipo:'Cobertura 01',area:658.23,dorm:5,suit:5,vagas:4,valor:39729984,entrada:5959498,pqtd:84,pval:130068,rqtd:14,rval:800000,chaves:11918995,entrega:'Dez/2028'},
+    // TORRE B
+    {u:'Cob 01 B',t:'B',tipo:'Cobertura 01',area:453.16,dorm:4,suit:4,vagas:4,valor:24915000,entrada:3737250,pqtd:84,pval:81567,rqtd:14,rval:500000,chaves:7474500,entrega:'Dez/2028'},
+    {u:'Cob 02 B',t:'B',tipo:'Cobertura 02',area:436.16,dorm:4,suit:4,vagas:4,valor:24077435,entrada:3611615,pqtd:84,pval:78825,rqtd:14,rval:483000,chaves:7223231,entrega:'Dez/2028'},
+    // TORRE C
+    {u:'201 C',t:'C',tipo:'Final 01',area:283.42,dorm:3,suit:3,vagas:2,valor:10816266,entrada:1622440,pqtd:84,pval:35410,rqtd:14,rval:212000,chaves:3244880,entrega:'Dez/2028'},
+    {u:'301 C',t:'C',tipo:'Final 01',area:283.42,dorm:3,suit:3,vagas:2,valor:10892248,entrada:1633837,pqtd:84,pval:35659,rqtd:14,rval:214000,chaves:3267674,entrega:'Dez/2028'},
+    {u:'1001 C',t:'C',tipo:'Final 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11453104,entrada:1717966,pqtd:84,pval:37495,rqtd:14,rval:225000,chaves:3435931,entrega:'Dez/2028'},
+    {u:'1101 C',t:'C',tipo:'Final 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11535602,entrada:1730340,pqtd:84,pval:37765,rqtd:14,rval:228000,chaves:3460181,entrega:'Dez/2028'},
+    {u:'Cob 01 C',t:'C',tipo:'Cobertura 01',area:567.18,dorm:4,suit:4,vagas:4,valor:31185000,entrada:4677750,pqtd:84,pval:102094,rqtd:14,rval:625000,chaves:9353250,entrega:'Dez/2028'},
+    {u:'Cob 02 C',t:'C',tipo:'Cobertura 02',area:461.54,dorm:4,suit:4,vagas:4,valor:25410000,entrada:3811500,pqtd:84,pval:83188,rqtd:14,rval:510000,chaves:7623000,entrega:'Dez/2028'},
+    // TORRE D
+    {u:'102 D',t:'D',tipo:'Garden Final 02',area:399.87,dorm:4,suit:4,vagas:3,valor:15175960,entrada:2276394,pqtd:84,pval:49683,rqtd:14,rval:300000,chaves:4552788,entrega:'Dez/2028'},
+    {u:'202 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:12765244,entrada:1914787,pqtd:84,pval:41791,rqtd:14,rval:252000,chaves:3829573,entrega:'Dez/2028'},
+    {u:'302 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:12875184,entrada:1931278,pqtd:84,pval:42151,rqtd:14,rval:254000,chaves:3862555,entrega:'Dez/2028'},
+    {u:'402 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:12985137,entrada:1947771,pqtd:84,pval:42511,rqtd:14,rval:256000,chaves:3895541,entrega:'Dez/2028'},
+    {u:'501 D',t:'D',tipo:'Final 01',area:531.58,dorm:4,suit:4,vagas:3,valor:21208082,entrada:3181212,pqtd:84,pval:69431,rqtd:14,rval:425000,chaves:6362425,entrega:'Dez/2028'},
+    {u:'601 D',t:'D',tipo:'Final 01',area:531.58,dorm:4,suit:4,vagas:3,valor:21348813,entrada:3202322,pqtd:84,pval:69892,rqtd:14,rval:428000,chaves:6404644,entrega:'Dez/2028'},
+    {u:'602 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:13205042,entrada:1980756,pqtd:84,pval:43231,rqtd:14,rval:260000,chaves:3961513,entrega:'Dez/2028'},
+    {u:'701 D',t:'D',tipo:'Final 01',area:531.58,dorm:4,suit:4,vagas:3,valor:21489544,entrada:3223432,pqtd:84,pval:70353,rqtd:14,rval:430000,chaves:6446863,entrega:'Dez/2028'},
+    {u:'902 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:13534888,entrada:2030233,pqtd:84,pval:44311,rqtd:14,rval:267000,chaves:4060466,entrega:'Dez/2028'},
+    {u:'1001 D',t:'D',tipo:'Final 01',area:531.58,dorm:4,suit:4,vagas:3,valor:21872993,entrada:3280949,pqtd:84,pval:71608,rqtd:14,rval:438000,chaves:6561898,entrega:'Dez/2028'},
+    {u:'1202 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:16406355,entrada:2460953,pqtd:84,pval:53711,rqtd:14,rval:323000,chaves:4921907,entrega:'Dez/2028'},
+    {u:'1302 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:16517209,entrada:2477581,pqtd:84,pval:54074,rqtd:14,rval:325000,chaves:4953163,entrega:'Dez/2028'},
+    {u:'1702 D',t:'D',tipo:'Final 02',area:334.22,dorm:3,suit:3,vagas:2,valor:16960624,entrada:2544094,pqtd:84,pval:55526,rqtd:14,rval:333000,chaves:5088187,entrega:'Dez/2028'},
+    {u:'Cob 02 D',t:'D',tipo:'Cobertura 02',area:668.32,dorm:5,suit:5,vagas:4,valor:34763736,entrada:5214560,pqtd:84,pval:113810,rqtd:14,rval:697000,chaves:10429121,entrega:'Dez/2028'},
+    // TORRE E
+    {u:'102 E',t:'E',tipo:'Garden Final 02',area:269.67,dorm:3,suit:3,vagas:2,valor:9839875,entrada:1475981,pqtd:84,pval:32214,rqtd:14,rval:193000,chaves:2951963,entrega:'Dez/2028'},
+    {u:'201 E',t:'E',tipo:'Final 01',area:294.7,dorm:3,suit:3,vagas:2,valor:11222777,entrada:1683417,pqtd:84,pval:36741,rqtd:14,rval:220000,chaves:3367033,entrega:'Dez/2028'},
+    {u:'801 E',t:'E',tipo:'Final 01',area:294.7,dorm:3,suit:3,vagas:2,valor:11678678,entrada:1751802,pqtd:84,pval:38234,rqtd:14,rval:229000,chaves:3503603,entrega:'Dez/2028'},
+    {u:'1302 E',t:'E',tipo:'Final 02',area:230.97,dorm:3,suit:3,vagas:2,valor:9757560,entrada:1463634,pqtd:84,pval:31944,rqtd:14,rval:191000,chaves:2927268,entrega:'Dez/2028'},
+    {u:'1501 E',t:'E',tipo:'Final 01',area:294.7,dorm:3,suit:3,vagas:2,valor:13746699,entrada:2062005,pqtd:84,pval:45004,rqtd:14,rval:270000,chaves:4124010,entrega:'Dez/2028'},
+    {u:'1602 E',t:'E',tipo:'Final 02',area:230.97,dorm:3,suit:3,vagas:2,valor:11077142,entrada:1661571,pqtd:84,pval:36264,rqtd:14,rval:217000,chaves:3323571,entrega:'Dez/2028'},
+    {u:'1801 E',t:'E',tipo:'Final 01',area:294.7,dorm:3,suit:3,vagas:2,valor:14350000,entrada:2152500,pqtd:84,pval:46979,rqtd:14,rval:282000,chaves:4305000,entrega:'Dez/2028'},
+    {u:'Cob 01 E',t:'E',tipo:'Cobertura 01',area:589.4,dorm:4,suit:4,vagas:4,valor:32400000,entrada:4860000,pqtd:84,pval:106071,rqtd:14,rval:650000,chaves:9720000,entrega:'Dez/2028'},
+    {u:'Cob 02 E',t:'E',tipo:'Cobertura 02',area:461.94,dorm:4,suit:4,vagas:4,valor:25410000,entrada:3811500,pqtd:84,pval:83188,rqtd:14,rval:510000,chaves:7623000,entrega:'Dez/2028'},
+    // TORRE F
+    {u:'101 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:10740281,entrada:1611042,pqtd:84,pval:35162,rqtd:14,rval:210000,chaves:3222126,entrega:'Dez/2028'},
+    {u:'102 F',t:'F',tipo:'Tipo 02',area:230.94,dorm:3,suit:3,vagas:2,valor:8738113,entrada:1310717,pqtd:84,pval:28607,rqtd:14,rval:171000,chaves:2621151,entrega:'Dez/2028'},
+    {u:'201 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:10816265,entrada:1622440,pqtd:84,pval:35410,rqtd:14,rval:212000,chaves:3244879,entrega:'Dez/2028'},
+    {u:'301 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:10892248,entrada:1633837,pqtd:84,pval:35659,rqtd:14,rval:214000,chaves:3267674,entrega:'Dez/2028'},
+    {u:'501 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11044215,entrada:1656632,pqtd:84,pval:36157,rqtd:14,rval:217000,chaves:3313265,entrega:'Dez/2028'},
+    {u:'802 F',t:'F',tipo:'Tipo 02',area:230.94,dorm:3,suit:3,vagas:2,valor:9269999,entrada:1390500,pqtd:84,pval:30348,rqtd:14,rval:181000,chaves:2781150,entrega:'Dez/2028'},
+    {u:'901 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11348150,entrada:1702222,pqtd:84,pval:37152,rqtd:14,rval:222000,chaves:3404667,entrega:'Dez/2028'},
+    {u:'902 F',t:'F',tipo:'Tipo 02',area:230.94,dorm:3,suit:3,vagas:2,valor:9345982,entrada:1401897,pqtd:84,pval:30597,rqtd:14,rval:183000,chaves:2804795,entrega:'Dez/2028'},
+    {u:'1001 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11424133,entrada:1713620,pqtd:84,pval:37400,rqtd:14,rval:224000,chaves:3427240,entrega:'Dez/2028'},
+    {u:'1101 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11788855,entrada:1768328,pqtd:84,pval:38594,rqtd:14,rval:231000,chaves:3536657,entrega:'Dez/2028'},
+    {u:'1201 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11864838,entrada:1779726,pqtd:84,pval:38843,rqtd:14,rval:233000,chaves:3559451,entrega:'Dez/2028'},
+    {u:'1301 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:11940822,entrada:1791123,pqtd:84,pval:39092,rqtd:14,rval:234000,chaves:3582246,entrega:'Dez/2028'},
+    {u:'1501 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:13245207,entrada:1986781,pqtd:84,pval:43362,rqtd:14,rval:260000,chaves:3973562,entrega:'Dez/2028'},
+    {u:'1701 F',t:'F',tipo:'Tipo 01',area:283.42,dorm:3,suit:3,vagas:2,valor:13961985,entrada:2094298,pqtd:84,pval:45709,rqtd:14,rval:274000,chaves:4188594,entrega:'Dez/2028'},
+    {u:'1702 F',t:'F',tipo:'Tipo 02',area:230.94,dorm:3,suit:3,vagas:2,valor:11359547,entrada:1703932,pqtd:84,pval:37189,rqtd:14,rval:222000,chaves:3407864,entrega:'Dez/2028'},
+    {u:'1802 F',t:'F',tipo:'Tipo 02',area:230.94,dorm:3,suit:3,vagas:2,valor:11650818,entrada:1747623,pqtd:84,pval:38143,rqtd:14,rval:228000,chaves:3495245,entrega:'Dez/2028'},
+    {u:'Cob 01 F',t:'F',tipo:'Cobertura 01',area:567.18,dorm:4,suit:4,vagas:4,valor:31185000,entrada:4677750,pqtd:84,pval:102094,rqtd:14,rval:625000,chaves:9353250,entrega:'Dez/2028'},
+    {u:'Cob 02 F',t:'F',tipo:'Cobertura 02',area:461.54,dorm:4,suit:4,vagas:4,valor:23934832,entrada:3590225,pqtd:84,pval:78358,rqtd:14,rval:479000,chaves:7170449,entrega:'Dez/2028'},
+    // TORRE G
+    {u:'101 G',t:'G',tipo:'Final 01',area:226.56,dorm:3,suit:3,vagas:2,valor:8812231,entrada:1321835,pqtd:84,pval:28831,rqtd:14,rval:173000,chaves:2643669,entrega:'Dez/2028'},
+    {u:'301 G',t:'G',tipo:'Final 01',area:226.56,dorm:3,suit:3,vagas:2,valor:8968269,entrada:1345240,pqtd:84,pval:29348,rqtd:14,rval:176000,chaves:2690481,entrega:'Dez/2028'},
+    {u:'801 G',t:'G',tipo:'Final 01',area:226.56,dorm:3,suit:3,vagas:2,valor:9322727,entrada:1398409,pqtd:84,pval:30511,rqtd:14,rval:183000,chaves:2796818,entrega:'Dez/2028'},
+    {u:'902 G',t:'G',tipo:'Final 02',area:218.17,dorm:3,suit:3,vagas:2,valor:9047778,entrada:1357167,pqtd:84,pval:29638,rqtd:14,rval:178000,chaves:2714333,entrega:'Dez/2028'},
+    {u:'1401 G',t:'G',tipo:'Final 01',area:226.56,dorm:3,suit:3,vagas:2,valor:11188672,entrada:1678301,pqtd:84,pval:36634,rqtd:14,rval:220000,chaves:3356602,entrega:'Dez/2028'},
+    {u:'1501 G',t:'G',tipo:'Final 01',area:226.56,dorm:3,suit:3,vagas:2,valor:11278028,entrada:1691704,pqtd:84,pval:36948,rqtd:14,rval:222000,chaves:3383108,entrega:'Dez/2028'},
+    {u:'1502 G',t:'G',tipo:'Final 02',area:218.17,dorm:3,suit:3,vagas:2,valor:10967028,entrada:1645054,pqtd:84,pval:35904,rqtd:14,rval:215000,chaves:3293516,entrega:'Dez/2028'},
+    {u:'1701 G',t:'G',tipo:'Final 01',area:226.56,dorm:3,suit:3,vagas:2,valor:11455771,entrada:1718366,pqtd:84,pval:37511,rqtd:14,rval:225000,chaves:3436097,entrega:'Dez/2028'},
+    {u:'Cob 01 G',t:'G',tipo:'Cobertura 01',area:453.16,dorm:4,suit:4,vagas:4,valor:24915000,entrada:3737250,pqtd:84,pval:81567,rqtd:14,rval:500000,chaves:7474500,entrega:'Dez/2028'},
+    {u:'Cob 02 G',t:'G',tipo:'Cobertura 02',area:436.3,dorm:4,suit:4,vagas:4,valor:24077435,entrada:3611615,pqtd:84,pval:78825,rqtd:14,rval:483000,chaves:7223231,entrega:'Dez/2028'},
+    // TORRE H
+    {u:'102 H',t:'H',tipo:'Garden Final 02',area:485.42,dorm:4,suit:4,vagas:3,valor:20792911,entrada:3118937,pqtd:84,pval:68072,rqtd:14,rval:408432,chaves:6237873,entrega:'Dez/2028'},
+    {u:'201 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:12606945,entrada:1891042,pqtd:84,pval:41273,rqtd:14,rval:247636,chaves:3782084,entrega:'Dez/2028'},
+    {u:'202 H',t:'H',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15247375,entrada:2287106,pqtd:84,pval:49917,rqtd:14,rval:299502,chaves:4574213,entrega:'Dez/2028'},
+    {u:'301 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:12733584,entrada:1910038,pqtd:84,pval:41687,rqtd:14,rval:250124,chaves:3820075,entrega:'Dez/2028'},
+    {u:'302 H',t:'H',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15374014,entrada:2306102,pqtd:84,pval:50332,rqtd:14,rval:301990,chaves:4612204,entrega:'Dez/2028'},
+    {u:'401 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13860223,entrada:2079034,pqtd:84,pval:45376,rqtd:14,rval:272254,chaves:4158067,entrega:'Dez/2028'},
+    {u:'402 H',t:'H',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:16500653,entrada:2475098,pqtd:84,pval:54020,rqtd:14,rval:324120,chaves:4950196,entrega:'Dez/2028'},
+    {u:'501 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:12986863,entrada:1948029,pqtd:84,pval:42517,rqtd:14,rval:255000,chaves:3896589,entrega:'Dez/2028'},
+    {u:'502 H',t:'H',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15627293,entrada:2344094,pqtd:84,pval:51161,rqtd:14,rval:307000,chaves:4688188,entrega:'Dez/2028'},
+    {u:'601 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13113502,entrada:1967025,pqtd:84,pval:42931,rqtd:14,rval:257587,chaves:3934051,entrega:'Dez/2028'},
+    {u:'602 H',t:'H',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15878086,entrada:2381713,pqtd:84,pval:51982,rqtd:14,rval:311891,chaves:4763426,entrega:'Dez/2028'},
+    {u:'701 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13240141,entrada:1986021,pqtd:84,pval:43346,rqtd:14,rval:260000,chaves:3972042,entrega:'Dez/2028'},
+    {u:'702 H',t:'H',tipo:'Final 02',area:398.31,dorm:4,suit:4,vagas:2,valor:15880571,entrada:2382086,pqtd:84,pval:51990,rqtd:14,rval:311897,chaves:4764257,entrega:'Dez/2028'},
+    {u:'801 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13490937,entrada:2023641,pqtd:84,pval:44167,rqtd:14,rval:265001,chaves:4047281,entrega:'Dez/2028'},
+    {u:'901 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:13595920,entrada:2039388,pqtd:84,pval:44510,rqtd:14,rval:267000,chaves:4078164,entrega:'Dez/2028'},
+    {u:'1001 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:15997079,entrada:2399562,pqtd:84,pval:52371,rqtd:14,rval:314000,chaves:4799124,entrega:'Dez/2028'},
+    {u:'1201 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:16854428,entrada:2528164,pqtd:84,pval:55178,rqtd:14,rval:331060,chaves:5056328,entrega:'Dez/2028'},
+    {u:'1401 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:17379981,entrada:2606997,pqtd:84,pval:56899,rqtd:14,rval:344000,chaves:5213991,entrega:'Dez/2028'},
+    {u:'1701 H',t:'H',tipo:'Final 01',area:329.15,dorm:4,suit:4,vagas:2,valor:17884055,entrada:2682608,pqtd:84,pval:58549,rqtd:14,rval:354000,chaves:5365217,entrega:'Dez/2028'},
+  ];
+
+  estoque = [
+    ...tercSeed.map((t, i) => ({
+      id: 'terc' + (i + 1), tipo: 'terc',
+      nome: t.nome, empr: t.empr, unidade: t.unidade, torre: '',
+      cidade: t.cidade, area: t.area, dorm: t.dorm, suit: t.suit, vagas: t.vagas,
+      valor: t.valor, pctEntrada: t.pctEntrada, entrada: t.entrada,
+      pqtd: t.pqtd, pval: t.pval, rqtd: t.rqtd, rval: t.rval,
+      fin: t.fin, entrega: t.entrega, status: t.status,
+      obs: '', site: '', pdf: '',
+    })),
+    ...atmSeed.map((a, i) => ({
+      id: 'atm' + (i + 1), tipo: 'atm',
+      nome: `Atmosphere Home SPA — Torre ${a.t} · ${a.u}`,
+      empr: 'Atmosphere Home SPA', unidade: a.u, torre: a.t,
+      cidade: 'Itajaí', area: a.area, dorm: a.dorm, suit: a.suit, vagas: a.vagas,
+      valor: a.valor, pctEntrada: 15, entrada: a.entrada,
+      pqtd: a.pqtd, pval: a.pval, rqtd: a.rqtd, rval: a.rval,
+      chaves: a.chaves || 0,
+      fin: 'bancario', entrega: a.entrega, status: 'disponivel',
+      obs: a.tipo + ' · Praia Brava, Itajaí — SC · Tabela 08/06/2026',
+      site: 'https://atmospherehomespa.com.br', pdf: '',
+      tabelaDireto: a.valor,
+      tabelaChaves: a.chaves ? Math.round(a.valor * 1.0) : 0,
+    })),
+  ];
+  saveEstoque();
+}
+
+function saveEstoque() {
+  localStorage.setItem('agile_estoque', JSON.stringify(estoque));
+  localStorage.setItem('agile_estoque_ver', '20260608');
+}
+
+function setEmpTab(tab) {
+  empTabAtual = tab;
+  document.querySelectorAll('#pg-empreendimentos .tab').forEach((el, i) => {
+    el.classList.toggle('active', ['atm','terc','historico','importar'][i] === tab);
+  });
+  const fbar = document.getElementById('emp-fbar');
+  if (fbar) fbar.style.display = (tab === 'atm' || tab === 'terc') ? 'flex' : 'none';
+
+  if (tab === 'historico') renderHistoricoValores();
+  else if (tab === 'importar') renderPainelImportExport();
+  else renderCarteira();
+}
+
+// ── Histórico de valorização ──
+function registrarHistorico(id, valorAntigo, valorNovo, origem) {
+  const key = 'agile_hist_' + id;
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+  const mes = new Date().toLocaleDateString('pt-BR', {month:'2-digit', year:'numeric'});
+  // Evita duplicata no mesmo mês
+  if (!hist.find(h => h.mes === mes)) {
+    hist.push({ mes, valor: valorAntigo, origem: origem || 'manual' });
+  }
+  localStorage.setItem(key, JSON.stringify(hist));
+}
+
+function getHistorico(id) {
+  try { return JSON.parse(localStorage.getItem('agile_hist_' + id) || '[]'); } catch(e) { return []; }
+}
+
+function renderHistoricoValores() {
+  const el = document.getElementById('emp-lista'); if (!el) return;
+
+  // Coleta todos os imóveis com histórico
+  const comHist = estoque.filter(e => getHistorico(e.id).length > 0);
+  const todos = [...estoque].sort((a,b) => {
+    const ha = getHistorico(a.id), hb = getHistorico(b.id);
+    if (!ha.length && !hb.length) return 0;
+    if (!ha.length) return 1;
+    if (!hb.length) return -1;
+    const va = ha[0].valor, vb = hb[0].valor;
+    const varA = (a.valor - va) / va;
+    const varB = (b.valor - vb) / vb;
+    return varB - varA;
+  });
+
+  const fmtV = v => 'R$ ' + (v/1e6).toFixed(3).replace('.',',') + 'M';
+  const fmtPct = (ant, novo) => {
+    if (!ant || ant === novo) return null;
+    const pct = ((novo - ant) / ant * 100);
+    return { pct, up: pct > 0 };
+  };
+
+  if (!todos.length) {
+    el.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--ink3)">
+      <div style="font-size:32px;margin-bottom:12px">📈</div>
+      <div style="font-size:14px;font-weight:500;margin-bottom:6px">Nenhum histórico registrado ainda</div>
+      <div style="font-size:12px">Importe uma nova tabela para começar a registrar a evolução dos valores.</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div style="background:var(--surf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:1.5rem">
+      <div style="padding:.9rem 1.1rem;background:var(--surf2);border-bottom:1px solid var(--bd);font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">
+        Evolução de Valores — ${todos.length} unidades
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th>Unidade</th>
+          <th>Torre</th>
+          <th>Valor atual</th>
+          <th>Valor anterior</th>
+          <th>Variação</th>
+          <th>Histórico</th>
+        </tr></thead>
+        <tbody>
+          ${todos.map(e => {
+            const hist = getHistorico(e.id);
+            const anterior = hist.length ? hist[hist.length-1] : null;
+            const var_ = anterior ? fmtPct(anterior.valor, e.valor) : null;
+            const sparkline = hist.slice(-6).map(h => h.valor);
+            sparkline.push(e.valor);
+            const maxS = Math.max(...sparkline);
+            const minS = Math.min(...sparkline);
+            const pts = sparkline.map((v, i) => {
+              const x = (i / (sparkline.length-1)) * 60;
+              const y = 16 - ((v - minS) / (maxS - minS || 1)) * 14;
+              return `${x},${y}`;
+            }).join(' ');
+
+            return `<tr onclick="abrirModalEstoque('${e.id}')" style="cursor:pointer">
+              <td style="font-weight:500">${e.unidade || e.nome.split('·')[1]?.trim() || e.nome}</td>
+              <td><span class="pill p-bronze" style="font-size:9px">${e.tipo==='atm'?'Torre '+e.torre:'Terc.'}</span></td>
+              <td style="font-weight:600;color:var(--ink)">${fmtV(e.valor)}</td>
+              <td style="color:var(--ink3)">${anterior ? fmtV(anterior.valor) : '–'}</td>
+              <td>${var_ ? `<span style="color:${var_.up?'var(--ok)':'var(--danger)'};font-weight:600;font-size:12px">
+                ${var_.up?'↑':'↓'} ${Math.abs(var_.pct).toFixed(2)}%
+              </span>` : '<span style="color:var(--ink3);font-size:11px">—</span>'}</td>
+              <td>
+                ${sparkline.length > 1 ? `
+                <svg width="64" height="20" viewBox="0 0 64 20">
+                  <polyline points="${pts}" fill="none" stroke="${var_&&!var_.up?'#9B2C1C':'#C9A84C'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="${60}" cy="${16 - ((e.valor-minS)/(maxS-minS||1))*14}" r="2.5" fill="${var_&&!var_.up?'#9B2C1C':'#C9A84C'}"/>
+                </svg>` : '<span style="color:var(--ink3);font-size:10px">—</span>'}
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── Painel Import / Export ──
+function renderPainelImportExport() {
+  const el = document.getElementById('emp-lista'); if (!el) return;
+
+  el.innerHTML = `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+
+    <!-- IMPORTAR -->
+    <div style="background:var(--surf);border:1px solid var(--bd);border-radius:14px;overflow:hidden">
+      <div style="background:var(--forest);padding:1rem 1.25rem">
+        <div style="font-size:13px;font-weight:700;color:#fff;letter-spacing:.04em">Importar Tabela</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px">PDF Integ/DWV ou JSON de backup</div>
+      </div>
+      <div style="padding:1.25rem">
+
+        <!-- Upload PDF Atmosphere CHAVES -->
+        <div style="margin-bottom:1rem">
+          <div style="font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block"></span>
+            Atmosphere — Tabela CHAVES (PDF Integ)
+          </div>
+          <div id="drop-atm-chaves" onclick="document.getElementById('file-atm-chaves').click()"
+            style="border:2px dashed var(--bd2);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--surf2)"
+            ondragover="event.preventDefault();this.style.borderColor='var(--gold)'"
+            ondragleave="this.style.borderColor='var(--bd2)'"
+            ondrop="handleDropPDF(event,'atm-chaves')">
+            <div style="font-size:20px;margin-bottom:5px">🔑</div>
+            <div style="font-size:12px;color:var(--ink2);font-weight:500">Arraste o PDF ou clique</div>
+            <div style="font-size:10px;color:var(--ink3);margin-top:2px">Fluxo com parcela de chaves · Financiamento bancário</div>
+          </div>
+          <input type="file" id="file-atm-chaves" accept=".pdf" style="display:none" onchange="processarPDFAtm(this.files[0],'chaves')">
+        </div>
+
+        <!-- Upload PDF Atmosphere DIRETO -->
+        <div style="margin-bottom:1rem">
+          <div style="font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;background:var(--forest);border-radius:50%;display:inline-block"></span>
+            Atmosphere — Tabela DIRETO (PDF Integ)
+          </div>
+          <div id="drop-atm-direto" onclick="document.getElementById('file-atm-direto').click()"
+            style="border:2px dashed var(--bd2);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--surf2)"
+            ondragover="event.preventDefault();this.style.borderColor='var(--forest)'"
+            ondragleave="this.style.borderColor='var(--bd2)'"
+            ondrop="handleDropPDF(event,'atm-direto')">
+            <div style="font-size:20px;margin-bottom:5px">🏗</div>
+            <div style="font-size:12px;color:var(--ink2);font-weight:500">Arraste o PDF ou clique</div>
+            <div style="font-size:10px;color:var(--ink3);margin-top:2px">Fluxo direto com construtora · Sem chaves</div>
+          </div>
+          <input type="file" id="file-atm-direto" accept=".pdf" style="display:none" onchange="processarPDFAtm(this.files[0],'direto')">
+        </div>
+
+        <!-- Upload PDF Terceiros -->
+        <div style="margin-bottom:1rem">
+          <div style="font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;background:var(--forest);border-radius:50%;display:inline-block"></span>
+            Terceiros Exclusivos (PDF DWV)
+          </div>
+          <div id="drop-terc" onclick="document.getElementById('file-terc').click()"
+            style="border:2px dashed var(--bd2);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--surf2)"
+            ondragover="event.preventDefault();this.style.borderColor='var(--gold)'"
+            ondragleave="this.style.borderColor='var(--bd2)'"
+            ondrop="handleDropPDF(event,'terc')">
+            <div style="font-size:24px;margin-bottom:6px">📋</div>
+            <div style="font-size:12px;color:var(--ink2);font-weight:500">Arraste o PDF ou clique para selecionar</div>
+            <div style="font-size:10px;color:var(--ink3);margin-top:3px">Terceiros Exclusivos · DWV</div>
+          </div>
+          <input type="file" id="file-terc" accept=".pdf" style="display:none" onchange="processarPDFTerc(this.files[0])">
+        </div>
+
+        <!-- Upload JSON backup -->
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;background:var(--ok);border-radius:50%;display:inline-block"></span>
+            Backup completo (JSON)
+          </div>
+          <div onclick="document.getElementById('file-json').click()"
+            style="border:2px dashed var(--bd2);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;background:var(--surf2)"
+            ondragover="event.preventDefault();this.style.borderColor='var(--ok)'"
+            ondragleave="this.style.borderColor='var(--bd2)'"
+            ondrop="handleDropJSON(event)">
+            <div style="font-size:11px;color:var(--ink2)">📦 Importar backup .json</div>
+            <div style="font-size:10px;color:var(--ink3);margin-top:2px">Restaura CRM + Propostas + Estoque</div>
+          </div>
+          <input type="file" id="file-json" accept=".json" style="display:none" onchange="importarJSON(this.files[0])">
+        </div>
+
+        <!-- Log de importação -->
+        <div id="import-log" style="margin-top:1rem;display:none">
+          <div style="background:var(--surf2);border-radius:8px;padding:.9rem;font-size:11px;line-height:1.8;color:var(--ink2);border-left:3px solid var(--gold);max-height:180px;overflow-y:auto" id="import-log-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORTAR -->
+    <div style="background:var(--surf);border:1px solid var(--bd);border-radius:14px;overflow:hidden">
+      <div style="background:var(--forest);padding:1rem 1.25rem">
+        <div style="font-size:13px;font-weight:700;color:#fff;letter-spacing:.04em">Exportar / Backup</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px">Baixe seus dados em JSON</div>
+      </div>
+      <div style="padding:1.25rem">
+
+        <!-- Backup completo -->
+        <div style="background:var(--forest);border-radius:10px;padding:1rem 1.2rem;margin-bottom:.9rem;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#fff">Backup Completo</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px">CRM + Propostas + Estoque + Histórico</div>
+          </div>
+          <button class="btn btn-f btn-sm" onclick="exportarBackupCompleto()" style="background:var(--gold);border-color:var(--gold)">Baixar</button>
+        </div>
+
+        <!-- Individuais -->
+        ${[
+          {label:'CRM (contatos)', desc:'102 contatos + histórico de interações', fn:'exportarCRM', icon:'👥'},
+          {label:'Propostas', desc:'Todas as propostas registradas', fn:'exportarPropostas', icon:'📄'},
+          {label:'Estoque', desc:'Atmosphere + Terceiros + histórico de valores', fn:'exportarEstoque', icon:'🏢'},
+          {label:'Histórico de valores', desc:'Evolução de preços por unidade', fn:'exportarHistorico', icon:'📈'},
+        ].map(item => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--bd)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:18px">${item.icon}</span>
+              <div>
+                <div style="font-size:12px;font-weight:500;color:var(--ink)">${item.label}</div>
+                <div style="font-size:10px;color:var(--ink3)">${item.desc}</div>
+              </div>
+            </div>
+            <button class="btn btn-sm" onclick="${item.fn}()">Exportar</button>
+          </div>`).join('')}
+
+        <!-- Info última importação -->
+        <div id="ultima-importacao" style="margin-top:1rem;background:var(--surf2);border-radius:8px;padding:.75rem 1rem;font-size:10px;color:var(--ink3)">
+          Última importação: <strong id="ultima-imp-data" style="color:var(--ink2)">–</strong>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  // Carrega info última importação
+  const ui = localStorage.getItem('agile_ultima_importacao');
+  if (ui) document.getElementById('ultima-imp-data').textContent = ui;
+}
+
+// ── Parser PDF Atmosphere (Integ) ──
+async function lerTextoPDF(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      // Usa pdf.js se disponível, senão tenta leitura básica
+      try {
+        const arr = new Uint8Array(e.target.result);
+        // Extrai texto do PDF via parsing básico de streams
+        let text = '';
+        const str = String.fromCharCode(...arr.slice(0, Math.min(arr.length, 500000)));
+        // Extrai strings entre parênteses (formato PDF text)
+        const matches = str.match(/\(([^)]{2,200})\)/g) || [];
+        text = matches.map(m => m.slice(1,-1)
+          .replace(/\\n/g,'\n').replace(/\\r/g,' ')
+          .replace(/\\\(/g,'(').replace(/\\\)/g,')')
+          .replace(/\\240/g,' ')
+        ).join(' ');
+        resolve(text);
+      } catch(err) {
+        resolve('');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function handleDropPDF(e, tipo) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.name.endsWith('.pdf')) { toast('Arquivo deve ser PDF'); return; }
+  if (tipo === 'atm-chaves') processarPDFAtm(file, 'chaves');
+  else if (tipo === 'atm-direto') processarPDFAtm(file, 'direto');
+  else processarPDFTerc(file);
+}
+
+function handleDropJSON(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.name.endsWith('.json')) { toast('Arquivo deve ser .json'); return; }
+  importarJSON(file);
+}
+
+function logImport(msg, tipo) {
+  const log = document.getElementById('import-log');
+  const body = document.getElementById('import-log-body');
+  if (!log || !body) return;
+  log.style.display = 'block';
+  const cor = tipo === 'ok' ? 'var(--ok)' : tipo === 'err' ? 'var(--danger)' : 'var(--ink3)';
+  body.innerHTML += `<div style="color:${cor}">${msg}</div>`;
+  body.scrollTop = body.scrollHeight;
+}
+
+async function processarPDFAtm(file, fluxo) {
+  if (!file) return;
+  fluxo = fluxo || (file.name.toUpperCase().includes('CHAVES') ? 'chaves' : 'direto');
+  const label = fluxo === 'chaves' ? 'CHAVES 🔑' : 'DIRETO 🏗';
+  logImport(`📄 Lendo PDF Atmosphere — Tabela ${label}...`, 'info');
+  const texto = await lerTextoPDF(file);
+
+  let atualizados = 0, novos = 0, semMudanca = 0;
+
+  const reUnidade = /(\d{2,4}[AB]?)\s+(Torre\s+[A-H]|[A-H])\s+.*?R\$\s*([\d.,]+)/gi;
+  let match;
+  const encontrados = [];
+
+  while ((match = reUnidade.exec(texto)) !== null) {
+    const unidadeStr = match[1];
+    const torre = match[2].replace('Torre ','').trim();
+    const valorStr = match[3].replace(/\./g,'').replace(',','.');
+    const valor = parseFloat(valorStr);
+    if (valor > 1000000) encontrados.push({ unidade: unidadeStr + ' ' + torre, torre, valor });
+  }
+
+  if (encontrados.length === 0) {
+    logImport('⚠ Parser não localizou unidades no PDF. Tente o CSV da Integ para maior precisão.', 'err');
+    return;
+  }
+
+  encontrados.forEach(({ unidade, torre, valor }) => {
+    const idx = estoque.findIndex(e =>
+      e.tipo === 'atm' && e.torre === torre &&
+      (e.unidade === unidade || e.unidade === unidade.replace(' '+torre,'').trim())
+    );
+    if (idx >= 0) {
+      const ant = estoque[idx].valor;
+      // Armazena o fluxo específico na unidade
+      if (fluxo === 'chaves') {
+        // Tabela CHAVES: valor total inclui chaves — registra separado
+        const chaves = Math.round(valor * 0.30); // ~30% nas chaves
+        if (!estoque[idx].tabelaChaves || Math.abs(estoque[idx].tabelaChaves - valor) > 100) {
+          if (estoque[idx].tabelaChaves) registrarHistorico(estoque[idx].id + '_chaves', estoque[idx].tabelaChaves, valor, file.name);
+          estoque[idx].tabelaChaves = valor;
+          estoque[idx].chaves = chaves;
+          atualizados++;
+          logImport(`✓ ${unidade} [CHAVES]: R$ ${(valor/1e6).toFixed(3)}M`, 'ok');
+        } else { semMudanca++; }
+      } else {
+        // Tabela DIRETO: valor base sem chaves
+        if (Math.abs(ant - valor) > 100) {
+          registrarHistorico(estoque[idx].id, ant, valor, file.name);
+          estoque[idx].valor = valor;
+          estoque[idx].tabelaDireto = valor;
+          estoque[idx].entrada = Math.round(valor * 0.15);
+          atualizados++;
+          logImport(`✓ ${unidade} [DIRETO]: ${(ant/1e6).toFixed(3)}M → ${(valor/1e6).toFixed(3)}M (${((valor-ant)/ant*100).toFixed(2)}%)`, 'ok');
+        } else { semMudanca++; }
+      }
+    } else { novos++; }
+  });
+
+  finalizarImportacao(`${file.name} [${label}]`, atualizados, novos, semMudanca);
+}
+
+async function processarPDFTerc(file) {
+  if (!file) return;
+  logImport('📋 Lendo PDF Terceiros...', 'info');
+  const texto = await lerTextoPDF(file);
+
+  let atualizados = 0, semMudanca = 0;
+
+  // Parser DWV: busca nome do imóvel + valor R$ X.XXX.XXX,XX
+  const reValor = /R\$\s*([\d.,]+)/g;
+  const reNome = /([A-ZÁÉÍÓÚÂÊÔÃÕÇ][^.!?\n]{8,60})\s*\n/g;
+
+  const valores = [];
+  let m;
+  while ((m = reValor.exec(texto)) !== null) {
+    const v = parseFloat(m[1].replace(/\./g,'').replace(',','.'));
+    if (v > 300000) valores.push({ pos: m.index, valor: v });
+  }
+
+  valores.forEach(({ valor }) => {
+    // Tenta encontrar o imóvel mais próximo pelo valor
+    const idx = estoque.findIndex(e => e.tipo === 'terc' && Math.abs(e.valor - valor) < 50000);
+    if (idx >= 0) {
+      const ant = estoque[idx].valor;
+      if (Math.abs(ant - valor) > 100) {
+        registrarHistorico(estoque[idx].id, ant, valor, file.name);
+        estoque[idx].valor = valor;
+        estoque[idx].entrada = Math.round(valor * estoque[idx].pctEntrada / 100);
+        atualizados++;
+        logImport(`✓ ${estoque[idx].nome.substring(0,35)}: R$ ${(ant/1e6).toFixed(3)}M → R$ ${(valor/1e6).toFixed(3)}M`, 'ok');
+      } else { semMudanca++; }
+    }
+  });
+
+  finalizarImportacao(file.name, atualizados, 0, semMudanca);
+}
+
+function finalizarImportacao(nomeArquivo, atualizados, novos, semMudanca) {
+  saveEstoque();
+  const agora = new Date().toLocaleString('pt-BR');
+  localStorage.setItem('agile_ultima_importacao', `${nomeArquivo} · ${agora}`);
+  const el = document.getElementById('ultima-imp-data');
+  if (el) el.textContent = `${nomeArquivo} · ${agora}`;
+  logImport(`─────────────────────────────`, 'info');
+  logImport(`✅ Concluído: ${atualizados} atualizados · ${novos} novos · ${semMudanca} sem mudança`, 'ok');
+  logImport(`💾 Dados salvos em ${agora}`, 'info');
+  if (atualizados > 0) toast(`✓ ${atualizados} unidades atualizadas`);
+  else toast('Importação concluída — sem alterações de valor');
+}
+
+// ── Export functions ──
+function downloadJSON(obj, nome) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nome + '_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportarBackupCompleto() {
+  const backup = {
+    versao: 'agile-manager-v4.5',
+    data: new Date().toISOString(),
+    crm: dados || [],
+    propostas: propostas || [],
+    estoque: estoque || [],
+    historico: {},
+  };
+  // Inclui histórico de todos os imóveis
+  (estoque || []).forEach(e => {
+    const h = getHistorico(e.id);
+    if (h.length) backup.historico[e.id] = h;
+  });
+  downloadJSON(backup, 'agile-manager-backup');
+  toast('✓ Backup completo exportado');
+}
+
+function exportarCRM() {
+  downloadJSON({ data: new Date().toISOString(), contatos: dados || [] }, 'agile-crm');
+  toast('✓ CRM exportado');
+}
+
+function exportarPropostas() {
+  downloadJSON({ data: new Date().toISOString(), propostas: propostas || [] }, 'agile-propostas');
+  toast('✓ Propostas exportadas');
+}
+
+function exportarEstoque() {
+  const obj = { data: new Date().toISOString(), estoque: estoque || [], historico: {} };
+  (estoque || []).forEach(e => { const h = getHistorico(e.id); if(h.length) obj.historico[e.id] = h; });
+  downloadJSON(obj, 'agile-estoque');
+  toast('✓ Estoque exportado');
+}
+
+function exportarHistorico() {
+  const hist = {};
+  (estoque || []).forEach(e => {
+    const h = getHistorico(e.id);
+    if (h.length) hist[e.id] = { nome: e.nome, unidade: e.unidade, valorAtual: e.valor, historico: h };
+  });
+  downloadJSON({ data: new Date().toISOString(), historico: hist }, 'agile-historico-valores');
+  toast('✓ Histórico de valores exportado');
+}
+
+function importarJSON(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const backup = JSON.parse(e.target.result);
+      const log = document.getElementById('import-log');
+      const body = document.getElementById('import-log-body');
+      if (log) log.style.display = 'block';
+      if (body) body.innerHTML = '';
+
+      let importados = [];
+
+      if (backup.contatos || backup.crm) {
+        const c = backup.contatos || backup.crm;
+        dados.length = 0;
+        c.forEach(x => dados.push(x));
+        saveData();
+        logImport(`✓ CRM: ${c.length} contatos restaurados`, 'ok');
+        importados.push('CRM');
+      }
+      if (backup.propostas) {
+        propostas.length = 0;
+        backup.propostas.forEach(x => propostas.push(x));
+        saveData();
+        logImport(`✓ Propostas: ${backup.propostas.length} restauradas`, 'ok');
+        importados.push('Propostas');
+      }
+      if (backup.estoque) {
+        estoque = backup.estoque;
+        saveEstoque();
+        logImport(`✓ Estoque: ${backup.estoque.length} imóveis restaurados`, 'ok');
+        importados.push('Estoque');
+      }
+      if (backup.historico) {
+        Object.entries(backup.historico).forEach(([id, h]) => {
+          localStorage.setItem('agile_hist_' + id, JSON.stringify(h));
+        });
+        logImport(`✓ Histórico: ${Object.keys(backup.historico).length} séries restauradas`, 'ok');
+        importados.push('Histórico');
+      }
+
+      const agora = new Date().toLocaleString('pt-BR');
+      localStorage.setItem('agile_ultima_importacao', `${file.name} · ${agora}`);
+      logImport(`✅ Backup restaurado: ${importados.join(', ')} · ${agora}`, 'ok');
+      toast(`✓ Backup restaurado — ${importados.join(', ')}`);
+
+    } catch(err) {
+      logImport('❌ Erro ao ler JSON: ' + err.message, 'err');
+      toast('Erro ao importar — arquivo inválido');
+    }
+  };
+  reader.readAsText(file);
+}
+
+
+function renderEmpKpis() {
+  const el = document.getElementById('emp-kpis'); if (!el) return;
+  const atm = estoque.filter(e => e.tipo === 'atm');
+  const terc = estoque.filter(e => e.tipo === 'terc');
+  const disp = estoque.filter(e => e.status === 'disponivel');
+  const res  = estoque.filter(e => e.status === 'reservado');
+  const vend = estoque.filter(e => e.status === 'vendido');
+  const vol  = disp.reduce((s, e) => s + (e.valor || 0), 0);
+  el.innerHTML = [
+    {v: atm.length,  l: 'Atmosphere'},
+    {v: terc.length, l: 'Terceiros'},
+    {v: disp.length, l: 'Disponíveis'},
+    {v: res.length,  l: 'Reservados'},
+    {v: 'R$' + (vol/1e6).toFixed(1) + 'M', l: 'Vol. disponível', hi: true},
+  ].map(k => `
+    <div class="mc${k.hi?' stat-p':''}">
+      <div class="mc-v">${k.v}</div>
+      <div class="mc-l">${k.l}</div>
+    </div>`).join('');
+}
+
+function renderCarteira() {
+  renderEmpKpis();
+  const lista = document.getElementById('emp-lista'); if (!lista) return;
+  const search = (document.getElementById('emp-search')?.value || '').toLowerCase();
+  const stF    = document.getElementById('emp-status-f')?.value || '';
+  const cidF   = document.getElementById('emp-cidade-f')?.value || '';
+
+  // Populate cidade filter
+  const cidades = [...new Set(estoque.map(e => e.cidade).filter(Boolean))].sort();
+  const cidSel = document.getElementById('emp-cidade-f');
+  if (cidSel && cidSel.options.length <= 1) {
+    cidades.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cidSel.appendChild(o); });
+  }
+
+  let items = estoque.filter(e => e.tipo === empTabAtual);
+  if (search) items = items.filter(e => `${e.nome} ${e.empr} ${e.cidade} ${e.unidade}`.toLowerCase().includes(search));
+  if (stF)    items = items.filter(e => e.status === stF);
+  if (cidF)   items = items.filter(e => e.cidade === cidF);
+
+  const stLabel = {disponivel:'Disponível',reservado:'Reservado',em_obra:'Em Obra',pronto:'Pronto',vendido:'Vendido'};
+  const stCls   = {disponivel:'p-ok',reservado:'p-warn',em_obra:'p-bronze',pronto:'p-info',vendido:'p-gray'};
+  const fmtR = v => v > 0 ? 'R$ ' + v.toLocaleString('pt-BR') : '–';
+
+  if (!items.length) {
+    lista.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--ink3);font-size:13px">Nenhum imóvel encontrado.<br><button class="btn btn-f btn-sm" style="margin-top:12px" onclick="abrirModalEstoque(null,'${empTabAtual}')">+ Cadastrar primeiro imóvel</button></div>`;
+    return;
+  }
+
+  lista.innerHTML = items.map(e => `
+    <div class="emp-card" onclick="abrirModalEstoque('${e.id}')">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">
+        <div>
+          <div style="font-family:'Montserrat','DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:3px">${e.nome}</div>
+          <div style="font-size:11px;color:var(--ink3)">${e.cidade}${e.entrega ? ' · ' + e.entrega : ''}</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">
+          <span class="pill ${stCls[e.status]||'p-gray'}">${stLabel[e.status]||e.status}</span>
+          ${e.tipo==='atm'?'<span class="pill p-bronze">Atmosphere</span>':'<span class="pill p-gray">Terceiro</span>'}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:10px">
+        <div class="pc-item"><div class="pc-il">Área</div><div class="pc-iv">${e.area}m²</div></div>
+        <div class="pc-item"><div class="pc-il">Dorm</div><div class="pc-iv">${e.dorm||'–'}</div></div>
+        <div class="pc-item"><div class="pc-il">Suítes</div><div class="pc-iv">${e.suit||'–'}</div></div>
+        <div class="pc-item"><div class="pc-il">Vagas</div><div class="pc-iv">${e.vagas||'–'}</div></div>
+        <div class="pc-item"><div class="pc-il">Valor</div><div class="pc-iv" style="font-size:10px;color:var(--gold)">${fmtR(e.valor)}</div></div>
+        <div class="pc-item"><div class="pc-il">Entrada</div><div class="pc-iv" style="font-size:10px">${fmtR(e.entrada)}</div></div>
+      </div>
+      ${e.pqtd > 0 ? `<div style="font-size:10px;color:var(--ink3)">${e.pqtd}x ${fmtR(e.pval)} + ${e.rqtd}x ${fmtR(e.rval)} · ${e.fin==='bancario'?'Fin. bancário':e.fin}</div>` : ''}
+      ${e.tipo === 'atm' && (e.tabelaChaves || e.tabelaDireto) ? `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+        ${e.tabelaDireto ? `<div style="background:var(--forest-lt);border-radius:6px;padding:6px 9px">
+          <div style="font-size:8px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Tabela Direto</div>
+          <div style="font-size:11px;font-weight:600;color:var(--forest)">${fmtR(e.tabelaDireto)}</div>
+        </div>` : ''}
+        ${e.tabelaChaves ? `<div style="background:rgba(201,168,76,.1);border-radius:6px;padding:6px 9px">
+          <div style="font-size:8px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Tabela Chaves</div>
+          <div style="font-size:11px;font-weight:600;color:var(--gold)">${fmtR(e.tabelaChaves)}</div>
+        </div>` : ''}
+      </div>` : ''}
+      ${e.obs ? `<div style="font-size:11px;color:var(--ink3);margin-top:6px;font-style:italic">${e.obs}</div>` : ''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+        ${e.site ? `<a href="${e.site}" target="_blank" onclick="event.stopPropagation()" class="btn btn-sm" style="text-decoration:none;font-size:10px">Site</a>` : '<span></span>'}
+        ${(() => {
+          const hist = getHistorico(e.id);
+          if (!hist.length) return '<span style="font-size:9px;color:var(--ink3)">Sem histórico de valorização</span>';
+          const ant = hist[hist.length-1].valor;
+          const pct = ((e.valor - ant) / ant * 100);
+          const up = pct >= 0;
+          return `<span style="font-size:10px;font-weight:600;color:${up?'var(--ok)':'var(--danger)'}">
+            ${up?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs ${hist[hist.length-1].mes}
+          </span>`;
+        })()}
+      </div>
+    </div>`).join('');
+}
+
+function calcMeEntrada() {
+  const v = parseFloat(document.getElementById('me-valor')?.value) || 0;
+  const p = parseFloat(document.getElementById('me-pct-entrada')?.value) || 0;
+  const el = document.getElementById('me-entrada');
+  if (el) el.value = Math.round(v * p / 100);
+}
+
+function calcMeChavesPct() {
+  const tabChaves = parseFloat(document.getElementById('me-tabela-chaves')?.value) || 0;
+  const chaves    = parseFloat(document.getElementById('me-chaves')?.value) || 0;
+  const el = document.getElementById('me-chaves-pct');
+  if (el && tabChaves > 0) el.value = (chaves / tabChaves * 100).toFixed(1);
+}
+
+function toggleAtmFields() {
+  const tipo = document.getElementById('me-tipo')?.value;
+  const torre = document.getElementById('me-torre');
+  if (torre) torre.closest('.fi').style.opacity = tipo === 'atm' ? '1' : '.4';
+}
+
+function abrirModalEstoque(id, tipo) {
+  empEditId = id || null;
+  const e = id ? estoque.find(x => x.id === id) : null;
+  const t = tipo || (e ? e.tipo : 'terc');
+
+  document.getElementById('me-titulo').textContent = e ? 'Editar Imóvel' : 'Novo Imóvel';
+  document.getElementById('me-sub').textContent = e ? e.nome : 'Preencha os dados';
+  document.getElementById('me-del-btn').style.display = e ? 'inline-flex' : 'none';
+
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val ?? ''; };
+  set('me-tipo',        e?.tipo || t);
+  set('me-status',      e?.status || 'disponivel');
+  set('me-nome',        e?.nome || '');
+  set('me-empr',        e?.empr || (t==='atm'?'Atmosphere Home SPA':''));
+  set('me-unidade',     e?.unidade || '');
+  set('me-torre',       e?.torre || '');
+  set('me-cidade',      e?.cidade || (t==='atm'?'Itajaí':''));
+  set('me-area',        e?.area || '');
+  set('me-dorm',        e?.dorm || '');
+  set('me-suit',        e?.suit || '');
+  set('me-vagas',       e?.vagas || '');
+  set('me-valor',       e?.valor || '');
+  set('me-pct-entrada', e?.pctEntrada || 15);
+  set('me-entrada',     e?.entrada || '');
+  set('me-tabela-direto', e?.tabelaDireto || '');
+  set('me-tabela-chaves', e?.tabelaChaves || '');
+  set('me-chaves',      e?.chaves || '');
+  set('me-chaves-pct',  e?.tabelaChaves && e?.chaves ? (e.chaves/e.tabelaChaves*100).toFixed(1) : '');
+  set('me-pqtd',        e?.pqtd || '');
+  set('me-pval',        e?.pval || '');
+  set('me-rqtd',        e?.rqtd || '');
+  set('me-rval',        e?.rval || '');
+  set('me-fin',         e?.fin || 'bancario');
+  set('me-entrega',     e?.entrega || '');
+  set('me-obs',         e?.obs || '');
+  set('me-site',        e?.site || '');
+  set('me-pdf',         e?.pdf || '');
+
+  toggleAtmFields();
+  openOv('ov-estoque');
+}
+
+function salvarEstoque() {
+  const g = id => document.getElementById(id)?.value?.trim() || '';
+  const gn = id => parseFloat(document.getElementById(id)?.value) || 0;
+
+  const nome = g('me-nome');
+  if (!nome) { toast('Preencha o nome do imóvel'); return; }
+
+  const obj = {
+    id: empEditId || ('e' + Date.now()),
+    tipo: g('me-tipo'),
+    status: g('me-status'),
+    nome, empr: g('me-empr'),
+    unidade: g('me-unidade'),
+    torre: g('me-torre'),
+    cidade: g('me-cidade'),
+    area: gn('me-area'),
+    dorm: gn('me-dorm'),
+    suit: gn('me-suit'),
+    vagas: gn('me-vagas'),
+    valor: gn('me-valor'),
+    pctEntrada: gn('me-pct-entrada'),
+    entrada: gn('me-entrada'),
+    tabelaDireto: gn('me-tabela-direto'),
+    tabelaChaves: gn('me-tabela-chaves'),
+    chaves: gn('me-chaves'),
+    pqtd: gn('me-pqtd'),
+    pval: gn('me-pval'),
+    rqtd: gn('me-rqtd'),
+    rval: gn('me-rval'),
+    fin: g('me-fin'),
+    entrega: g('me-entrega'),
+    obs: g('me-obs'),
+    site: g('me-site'),
+    pdf: g('me-pdf'),
+  };
+
+  if (empEditId) {
+    const idx = estoque.findIndex(e => e.id === empEditId);
+    if (idx >= 0) estoque[idx] = obj;
+  } else {
+    estoque.push(obj);
+  }
+
+  saveEstoque();
+  closeOv('ov-estoque');
+  empTabAtual = obj.tipo;
+  renderCarteira();
+  toast(empEditId ? '✓ Imóvel atualizado' : '✓ Imóvel cadastrado');
+}
+
+function deletarEstoque() {
+  if (!empEditId) return;
+  if (!confirm('Excluir este imóvel da carteira?')) return;
+  estoque = estoque.filter(e => e.id !== empEditId);
+  saveEstoque();
+  closeOv('ov-estoque');
+  renderCarteira();
+  toast('Imóvel removido da carteira');
+}
+
+function renderEmpreendimentos() {
+  loadEstoque();
+  renderCarteira();
 }
 
 // ══ KEYBOARD SHORTCUTS ══
